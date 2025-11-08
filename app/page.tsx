@@ -41,7 +41,7 @@ export default function Home() {
           <div className="flex gap-4">
             <Link
               href="/login"
-              className="px-6 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition"
+              className="px-6 py-2 rounded-lg bg-primary text-black font-medium hover:bg-primary/90 transition"
             >
               Login
             </Link>
@@ -67,7 +67,7 @@ export default function Home() {
           <div className="flex gap-4 justify-center">
             <Link
               href="/signup"
-              className="px-8 py-3 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition text-lg"
+              className="px-8 py-3 rounded-lg bg-primary text-black font-medium hover:bg-primary/90 transition text-lg"
             >
               Get Started
             </Link>

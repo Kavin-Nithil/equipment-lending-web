@@ -116,7 +116,7 @@ export default function AdminEquipment() {
               setFormData({ name: "", category: "1", description: "", condition: "excellent", total_quantity: 1 })
               setShowModal(true)
             }}
-            className="px-6 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition"
+            className="px-6 py-2 rounded-lg bg-primary text-black font-medium hover:bg-primary/90 transition"
           >
             Add Equipment
           </button>
@@ -219,7 +219,7 @@ export default function AdminEquipment() {
               <div className="flex gap-3">
                 <button
                   type="submit"
-                  className="flex-1 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition"
+                  className="flex-1 py-2 rounded-lg bg-primary text-black font-medium hover:bg-primary/90 transition"
                 >
                   {editingId ? "Update" : "Create"}
                 </button>

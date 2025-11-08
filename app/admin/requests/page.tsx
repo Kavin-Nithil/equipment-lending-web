@@ -122,7 +122,7 @@ export default function AdminRequests() {
               onClick={() => setStatusFilter(status)}
               className={`px-4 py-2 rounded-lg font-medium transition ${
                 statusFilter === status
-                  ? "bg-primary text-white"
+                  ? "bg-primary text-black"
                   : "bg-background border border-border text-foreground hover:border-primary"
               }`}
             >
@@ -172,13 +172,13 @@ export default function AdminRequests() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleApprove(request.id)}
-                        className="flex-1 px-4 py-2 rounded-lg bg-green-600 text-white font-medium hover:bg-green-700 transition"
+                        className="flex-1 px-4 py-2 rounded-lg bg-green-600 text-black font-medium hover:bg-green-700 transition"
                       >
                         Approve
                       </button>
                       <button
                         onClick={() => handleReject(request.id)}
-                        className="flex-1 px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition"
+                        className="flex-1 px-4 py-2 rounded-lg bg-red-600 text-black font-medium hover:bg-red-700 transition"
                       >
                         Reject
                       </button>
@@ -188,7 +188,7 @@ export default function AdminRequests() {
                   {request.status === "approved" && (
                     <button
                       onClick={() => handleIssue(request.id)}
-                      className="w-full px-4 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition"
+                      className="w-full px-4 py-2 rounded-lg bg-blue-600 text-black font-medium hover:bg-blue-700 transition"
                     >
                       Issue Equipment
                     </button>
