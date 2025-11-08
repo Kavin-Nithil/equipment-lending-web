@@ -75,7 +75,7 @@
 }
 
 @theme inline {
-  /* optional: --font-sans, --font-serif, --font-mono if they are applied in the layout.tsx */
+  /* optional: --font-sans, --font-serif, --font-mono if they are applied in the page.tsx */
   --font-sans: ui-system, -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
 
   --color-background: var(--background);
