@@ -19,6 +19,12 @@ if ! command -v node &> /dev/null; then
     exit 1
 fi
 
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+source ~/.bashrc
+nvm install 18
+nvm use 18
+
+
 echo -e "${GREEN}✓ Node.js detected: $(node --version)${NC}"
 echo ""
 
