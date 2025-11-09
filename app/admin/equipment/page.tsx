@@ -187,7 +187,7 @@ export default function AdminEquipment() {
               setFormData({ name: "", category: categories[0]?.id.toString() || "", description: "", condition: "excellent", total_quantity: 1 })
               setShowModal(true)
             }}
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center space-x-2"
+            className="px-6 py-2 rounded-lg bg-primary text-black font-medium hover:bg-primary/90 transition"
           >
             <span>➕</span>
             <span>Add New Equipment</span>
@@ -407,7 +407,7 @@ export default function AdminEquipment() {
               <div className="flex gap-3 pt-4">
                 <button
                   type="submit"
-                  className="flex-1 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+                  className="flex-1 py-2 rounded-lg bg-primary text-black font-medium hover:bg-primary/90 transition"
                 >
                   {editingId ? "Update Equipment" : "Add Equipment"}
                 </button>

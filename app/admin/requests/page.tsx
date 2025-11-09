@@ -182,36 +182,20 @@ export default function AdminRequests() {
           </div>
         </div>
 
-        {/* Status Filter */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
-          <h3 className="text-sm font-semibold text-gray-700 mb-4">Filter by Status</h3>
-          <div className="flex flex-wrap gap-2">
-            {[
-              { key: "pending", label: "Pending Review", count: requests.filter(r => r.status === "pending").length },
-              { key: "approved", label: "Approved", count: requests.filter(r => r.status === "approved").length },
-              { key: "issued", label: "Issued", count: requests.filter(r => r.status === "issued").length },
-              { key: "returned", label: "Returned", count: requests.filter(r => r.status === "returned").length },
-              { key: "rejected", label: "Rejected", count: requests.filter(r => r.status === "rejected").length },
-            ].map(({ key, label, count }) => (
-              <button
-                key={key}
-                onClick={() => setStatusFilter(key)}
-                className={`px-4 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 border-2 ${
-                  statusFilter === key
-                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white border-transparent shadow-lg"
-                    : "bg-white text-gray-700 border-gray-300 hover:border-indigo-400 hover:bg-indigo-50"
-                }`}
-              >
-                <span>{getStatusIcon(key)}</span>
-                <span>{label}</span>
-                <span className={`px-2 py-1 rounded-full text-xs ${
-                  statusFilter === key ? "bg-white/20 text-white" : "bg-gray-100 text-gray-600"
-                }`}>
-                  {count}
-                </span>
-              </button>
-            ))}
-          </div>
+        <div className="flex gap-2">
+          {["pending", "approved", "issued", "returned", "rejected"].map((status) => (
+            <button
+              key={status}
+              onClick={() => setStatusFilter(status)}
+              className={`px-4 py-2 rounded-lg font-medium transition ${
+                statusFilter === status
+                  ? "bg-primary text-black"
+                  : "bg-background border border-border text-foreground hover:border-primary"
+              }`}
+            >
+              {status.charAt(0).toUpperCase() + status.slice(1)}
+            </button>
+          ))}
         </div>
 
         {loading ? (
@@ -319,17 +303,28 @@ export default function AdminRequests() {
                       )}
 
                       <button
-                        onClick={() => {
-                          setSelectedRequest(request)
-                          setShowModal(true)
-                        }}
-                        className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 text-gray-700 font-semibold hover:border-indigo-400 hover:bg-indigo-50 transition-all duration-200 flex items-center justify-center space-x-2"
+                        onClick={() => handleApprove(request.id)}
+                        className="flex-1 px-4 py-2 rounded-lg bg-green-600 text-black font-medium hover:bg-green-700 transition"
                       >
-                        <span>🔍</span>
-                        <span>View Details</span>
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => handleReject(request.id)}
+                        className="flex-1 px-4 py-2 rounded-lg bg-red-600 text-black font-medium hover:bg-red-700 transition"
+                      >
+                        Reject
                       </button>
                     </div>
-                  </div>
+                  )}
+
+                  {request.status === "approved" && (
+                    <button
+                      onClick={() => handleIssue(request.id)}
+                      className="w-full px-4 py-2 rounded-lg bg-blue-600 text-black font-medium hover:bg-blue-700 transition"
+                    >
+                      Issue Equipment
+                    </button>
+                  )}
                 </div>
               ))
             ) : (
