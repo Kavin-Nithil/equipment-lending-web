@@ -85,10 +85,8 @@ export default function StudentDashboard() {
           >
             <option value="">All Categories</option>
             <option value="1">Photography Equipment</option>
-            <option value="2">Sports Equipment</option>
-            <option value="3">Lab Equipment</option>
-            <option value="4">Musical Instruments</option>
-            <option value="5">Project Materials</option>
+            <option value="2">Laptops</option>
+            <option value="3">Project Materials</option>
           </select>
         </div>
 

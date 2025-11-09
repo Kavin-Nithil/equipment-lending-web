@@ -1,7 +1,5 @@
 "use client"
 
-import type React from "react"
-
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import AdminLayout from "@/components/layouts/admin-layout"
@@ -12,7 +10,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
 interface Equipment {
   id: number
   name: string
-  category: { name: string }
+  category: number
+  category_name: string
   description: string
   condition: string
   total_quantity: number
@@ -20,20 +19,28 @@ interface Equipment {
   is_active: boolean
 }
 
+interface Category {
+  id: number
+  name: string
+}
+
 export default function AdminEquipment() {
   const router = useRouter()
   const [equipment, setEquipment] = useState<Equipment[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [editingId, setEditingId] = useState<number | null>(null)
+
   const [formData, setFormData] = useState({
     name: "",
-    category: "1",
+    category: "",
     description: "",
     condition: "excellent",
     total_quantity: 1,
   })
 
+  // ✅ Load equipment + categories after auth check
   useEffect(() => {
     const token = localStorage.getItem("access_token")
     if (!token) {
@@ -42,6 +49,7 @@ export default function AdminEquipment() {
     }
 
     fetchEquipment()
+    fetchCategories()
   }, [router])
 
   const fetchEquipment = async () => {
@@ -62,6 +70,19 @@ export default function AdminEquipment() {
     }
   }
 
+  const fetchCategories = async () => {
+    try {
+      const token = localStorage.getItem("access_token")
+      const response = await fetch(`${API_URL}/api/categories/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const data = await response.json()
+      setCategories(data.results || data)
+    } catch (error) {
+      console.error("Failed to fetch categories:", error)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const token = localStorage.getItem("access_token")
@@ -76,13 +97,16 @@ export default function AdminEquipment() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          category: Number(formData.category), // ✅ ensure backend receives integer
+        }),
       })
 
       if (response.ok) {
         setShowModal(false)
         setEditingId(null)
-        setFormData({ name: "", category: "1", description: "", condition: "excellent", total_quantity: 1 })
+        resetForm()
         fetchEquipment()
       }
     } catch (error) {
@@ -90,11 +114,21 @@ export default function AdminEquipment() {
     }
   }
 
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      category: "",
+      description: "",
+      condition: "excellent",
+      total_quantity: 1,
+    })
+  }
+
   const handleEdit = (item: Equipment) => {
     setEditingId(item.id)
     setFormData({
       name: item.name,
-      category: item.category.name === "Photography Equipment" ? "1" : "2",
+      category: String(item.category),
       description: item.description,
       condition: item.condition,
       total_quantity: item.total_quantity,
@@ -113,10 +147,10 @@ export default function AdminEquipment() {
           <button
             onClick={() => {
               setEditingId(null)
-              setFormData({ name: "", category: "1", description: "", condition: "excellent", total_quantity: 1 })
+              resetForm()
               setShowModal(true)
             }}
-            className="px-6 py-2 rounded-lg bg-primary text-black font-medium hover:bg-primary/90 transition"
+            className="px-6 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition"
           >
             Add Equipment
           </button>
@@ -142,7 +176,7 @@ export default function AdminEquipment() {
                 {equipment.map((item) => (
                   <tr key={item.id} className="border-b border-border hover:bg-secondary transition">
                     <td className="px-6 py-3 text-foreground">{item.name}</td>
-                    <td className="px-6 py-3 text-muted-foreground">{item.category.name}</td>
+                    <td className="px-6 py-3 text-muted-foreground">{item.category_name}</td>
                     <td className="px-6 py-3 capitalize text-muted-foreground">{item.condition}</td>
                     <td className="px-6 py-3 text-muted-foreground">{item.total_quantity}</td>
                     <td className="px-6 py-3">
@@ -161,9 +195,10 @@ export default function AdminEquipment() {
         )}
       </div>
 
+      {/* ✅ Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-background rounded-lg border border-border p-6 max-w-md w-full">
+          <div className="bg-white dark:bg-background rounded-xl border border-border p-6 max-w-md w-full shadow-2xl">
             <h2 className="text-2xl font-bold text-foreground mb-4">
               {editingId ? "Edit Equipment" : "Add Equipment"}
             </h2>
@@ -175,9 +210,26 @@ export default function AdminEquipment() {
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:border-primary"
+                  className="input-base"
                   required
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">Category</label>
+                <select
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  className="input-base"
+                  required
+                >
+                  <option value="">Select Category</option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>
@@ -185,7 +237,7 @@ export default function AdminEquipment() {
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:border-primary resize-none"
+                  className="input-base resize-none"
                   rows={3}
                   required
                 />
@@ -196,7 +248,7 @@ export default function AdminEquipment() {
                 <select
                   value={formData.condition}
                   onChange={(e) => setFormData({ ...formData, condition: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:border-primary"
+                  className="input-base"
                 >
                   <option value="excellent">Excellent</option>
                   <option value="good">Good</option>
@@ -210,23 +262,23 @@ export default function AdminEquipment() {
                   type="number"
                   min="1"
                   value={formData.total_quantity}
-                  onChange={(e) => setFormData({ ...formData, total_quantity: Number.parseInt(e.target.value) })}
-                  className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:border-primary"
+                  onChange={(e) => setFormData({ ...formData, total_quantity: Number(e.target.value) })}
+                  className="input-base"
                   required
                 />
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex gap-3 pt-3">
                 <button
                   type="submit"
-                  className="flex-1 py-2 rounded-lg bg-primary text-black font-medium hover:bg-primary/90 transition"
+                  className="btn-primary flex-1"
                 >
                   {editingId ? "Update" : "Create"}
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 py-2 rounded-lg border border-border text-foreground font-medium hover:bg-secondary transition"
+                  className="btn-secondary flex-1"
                 >
                   Cancel
                 </button>

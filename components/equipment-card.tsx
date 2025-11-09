@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 
@@ -99,8 +98,8 @@ export default function EquipmentCard({ equipment, isStudent }: { equipment: Equ
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-background rounded-lg border border-border p-6 max-w-md w-full">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-2xl border border-border p-6 max-w-md w-full animate-fadeIn">
             <h2 className="text-2xl font-bold text-foreground mb-4">Request: {equipment.name}</h2>
 
             <form onSubmit={handleBorrow} className="space-y-4">
